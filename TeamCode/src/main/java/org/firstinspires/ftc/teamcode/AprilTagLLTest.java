@@ -14,9 +14,9 @@ public class AprilTagLLTest extends OpMode {
     @Override
     public void init(){
         limelight = hardwareMap.get(Limelight3A.class, "limelight"); //config name
-        int[] pipelines = {4, 5, 6, 7, 8}; //replace w actual pipeline nums
-        int currAT = 20; //disired apriltag num
-        limelight.pipelineSwitch(currAT-20); //switch to april tag of num currPL
+        int[] pipelines = {3, 4, 5, 6, 7}; //replace w actual pipeline nums
+        int currAT = 21; //disired apriltag num
+        limelight.pipelineSwitch(pipelines[currAT-20]); //switch to april tag of num currPL
         imu = hardwareMap.get(IMU.class, "imu");
         RevHubOrientationOnRobot rHOOR = new RevHubOrientationOnRobot(
                 RevHubOrientationOnRobot.LogoFacingDirection.UP,
