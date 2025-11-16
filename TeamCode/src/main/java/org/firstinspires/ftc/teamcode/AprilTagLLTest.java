@@ -7,6 +7,9 @@ import com.qualcomm.robotcore.hardware.IMU;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+
+@Autonomous(name="AprilTagLLTest", group="Tests")
 public class AprilTagLLTest extends OpMode {
     private Limelight3A limelight;
     private IMU imu;
@@ -16,7 +19,7 @@ public class AprilTagLLTest extends OpMode {
         limelight = hardwareMap.get(Limelight3A.class, "limelight"); //config name
         int[] pipelines = {3, 4, 5, 6, 7}; //replace w actual pipeline nums
         int currAT = 21; //disired apriltag num
-        limelight.pipelineSwitch(pipelines[currAT-20]); //switch to april tag of num currPL
+        limelight.pipelineSwitch(currAT-20); //switch to april tag of num currPL
         imu = hardwareMap.get(IMU.class, "imu");
         RevHubOrientationOnRobot rHOOR = new RevHubOrientationOnRobot(
                 RevHubOrientationOnRobot.LogoFacingDirection.UP,
@@ -37,11 +40,12 @@ public class AprilTagLLTest extends OpMode {
 
         if (llResult != null && llResult.isValid()) {
             Pose3D botPose = llResult.getBotpose_MT2();
-            distance = getDistFromTag(llResult.getTa());
+            double multTa = llResult.getTa() * 1000; //convert to percentage
+            distance = getDistFromTag(multTa);
 
             telemetry.addData("Tx", llResult.getTx());
             telemetry.addData("Ty", llResult.getTy());
-            telemetry.addData("Ta", llResult.getTa());
+            telemetry.addData("Ta", multTa);
 
             telemetry.addData("Distance", distance);
 
@@ -55,8 +59,7 @@ public class AprilTagLLTest extends OpMode {
     public double getDistFromTag(double ta) {
         //function --> Ax^-2
         //TODO: may or may need need to actually test with our own limlight
-        double A = 30665.95;
-        double dist = (A/ta);
-        return dist;
+        double A = 7330.724;
+        return Math.sqrt((A/ta));
     }
 }
